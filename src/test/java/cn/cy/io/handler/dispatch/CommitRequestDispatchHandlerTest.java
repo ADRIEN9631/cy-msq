@@ -1,19 +1,17 @@
 package cn.cy.io.handler.dispatch;
 
-import java.util.List;
-
+import cn.cy.io.handler.BaseTest;
+import cn.cy.io.handler.MsgJsonDecoder;
+import cn.cy.io.vo.json.BaseInfo;
+import cn.cy.io.vo.json.request.CommitRequest;
+import com.google.common.collect.Lists;
+import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-
-import cn.cy.io.handler.BaseTest;
-import cn.cy.io.handler.MsgJsonDecoder;
-import cn.cy.io.vo.BaseInfo;
-import cn.cy.io.vo.request.CommitRequest;
-import io.netty.channel.embedded.EmbeddedChannel;
-import io.netty.handler.codec.json.JsonObjectDecoder;
+import java.util.List;
 
 public class CommitRequestDispatchHandlerTest extends BaseTest {
 

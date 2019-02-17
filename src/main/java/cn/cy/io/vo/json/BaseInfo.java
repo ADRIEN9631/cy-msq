@@ -1,4 +1,4 @@
-package cn.cy.io.vo;
+package cn.cy.io.vo.json;
 
 /**
  * 所有消息(请求, 响应)的基类

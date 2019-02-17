@@ -2,11 +2,11 @@ package cn.cy.io.handler;
 
 import java.util.List;
 
+import cn.cy.io.vo.json.BaseInfo;
 import org.junit.Assert;
 
 import com.alibaba.fastjson.JSON;
 
-import cn.cy.io.vo.BaseInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;

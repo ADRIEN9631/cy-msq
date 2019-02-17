@@ -1,4 +1,4 @@
-package cn.cy.io.vo.request;
+package cn.cy.io.vo.json.request;
 
 /**
  * producer生产消息

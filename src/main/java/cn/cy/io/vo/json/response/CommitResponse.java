@@ -1,4 +1,4 @@
-package cn.cy.io.vo.response;
+package cn.cy.io.vo.json.response;
 
 /**
  * 消息提交之后的回应，可以理解为ack

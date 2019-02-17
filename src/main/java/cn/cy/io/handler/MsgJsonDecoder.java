@@ -7,9 +7,9 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
-import cn.cy.io.vo.BaseInfo;
+import cn.cy.io.vo.json.BaseInfo;
 import cn.cy.io.vo.RequestType;
-import cn.cy.io.vo.request.CommitRequest;
+import cn.cy.io.vo.json.request.CommitRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
