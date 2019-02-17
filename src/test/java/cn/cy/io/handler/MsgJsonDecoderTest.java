@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import cn.cy.io.vo.BaseInfo;
+import cn.cy.io.vo.json.BaseInfo;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 
