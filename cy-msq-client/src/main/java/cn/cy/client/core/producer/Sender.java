@@ -14,13 +14,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class Sender implements Runnable{
 
-    private volatile boolean isRunning = true;
+    private volatile boolean isRunning;
 
-    private ConcurrentLinkedQueue<Package> pendingQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<Package> pendingQueue;
 
-    public static final Sender INSTANCE = new Sender();
-
-    private Sender() {
+    public Sender() {
+        this.isRunning = true;
+        this.pendingQueue = new ConcurrentLinkedQueue<>();
     }
 
     private BaseInfo<CommitRequest> construct(String message) {
@@ -28,26 +28,45 @@ public class Sender implements Runnable{
         return new BaseInfo<>(RequestType.MESSAGE_COMMIT.id, null, UUID.randomUUID().toString(), request);
     }
 
+    /**
+     * 将消息放入待发送队列中
+     * @param message 消息
+     * @param dst 要发送至的channel
+     */
     public void send(String message, IChannel dst) {
         Package pac = new Package(construct(message), dst);
-        pendingQueue.add(pac);
+        pendingQueue.offer(pac);
     }
 
     @Override
     public void run() {
         while(isRunning) {
-            pollPending();
-        }
-    }
-
-    private void pollPending() {
-        if (!pendingQueue.isEmpty()) {
+            if (pendingQueue.isEmpty()) {
+                continue;
+            }
             Package pac = pendingQueue.poll();
             if (pac == null) {
-                return;
+                continue;
             }
             IChannel dst = pac.getDst();
             dst.asyncWrite(JSON.toJSONString(pac.getContent()));
         }
+    }
+
+    public int getPendingCount() {
+        return pendingQueue.size();
+    }
+
+    /**
+     * 修改isRunning变量为false，使发送线程停止发送队列中的消息
+     *
+     * @return 是否发生修改, 如isRunning已经为false则返回false
+     */
+    public boolean pause() {
+        if (isRunning) {
+            isRunning = false;
+            return true;
+        }
+        return false;
     }
 }

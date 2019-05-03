@@ -21,6 +21,7 @@ public class CyProducer implements IProducer {
 
     private String id;
 
+    //假设只有单个broker，先不做抽象
     private IChannel channel;
 
     private Sender sender;
@@ -31,7 +32,7 @@ public class CyProducer implements IProducer {
     public CyProducer(CyChannel channel) {
         this.id = UUID.randomUUID().toString();
         this.channel = channel;
-        this.sender = Sender.INSTANCE;
+        this.sender = new Sender();
         ioThread.submit(sender);
     }
 
@@ -39,7 +40,7 @@ public class CyProducer implements IProducer {
         try {
             this.id = UUID.randomUUID().toString();
             this.channel = NettyClient.INSTANCE.connect(host, port);
-            this.sender = Sender.INSTANCE;
+            this.sender = new Sender();
             ioThread.submit(sender);
         } catch (InterruptedException | ConnectionFailException e) {
             logger.error("Create producer fail, cannot connect to host {}, port {}", host, port);
@@ -50,7 +51,7 @@ public class CyProducer implements IProducer {
     @Override
     public void send(String message) {
         try {
-            this.sender.send(JSON.toJSONString(message), channel);
+            this.sender.send(message, channel);
         } catch (Exception e) {
             logger.error("Error when sending message, {}", message);
         }

@@ -46,20 +46,17 @@ public class CyProducerTest {
         EmbeddedChannel channel = new EmbeddedChannel(
                 inBoundHandler
         );
-        List<IProducer> producerList = new ArrayList<>();
-        for(int i = 0; i < 10; i++) {
-            IProducer producer = new CyProducer(new TestCyChannel(channel));
-            producerList.add(producer);
-        }
+
+        CyProducer producer = new CyProducer(new TestCyChannel(channel));
+        Sender sender = producer.getSender();
+        sender.pause();
+
         assertEquals(0, inBoundHandler.messageCount);
 
-        for (int i = 0; i < 10; i++) {
-            for (IProducer producer : producerList) {
-                producer.send(Integer.toString(i));
-            }
+        for (int i = 0; i < 10000; i++) {
+            producer.send(Integer.toString(i));
         }
 
-        Thread.sleep(2000);
-        assertEquals(100, inBoundHandler.messageCount);
+        assertEquals(10000, sender.getPendingCount());
     }
 }

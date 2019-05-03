@@ -16,7 +16,7 @@ public class SenderTest {
         String testMsg = "Hello";
         Method testMethod = Sender.class.getDeclaredMethod("construct", String.class);
         testMethod.setAccessible(true);
-        BaseInfo<CommitRequest> result = (BaseInfo<CommitRequest>) testMethod.invoke(Sender.INSTANCE, testMsg);
+        BaseInfo<CommitRequest> result = (BaseInfo<CommitRequest>) testMethod.invoke(new Sender(), testMsg);
         assertEquals("Hello", result.getData().getMsg());
     }
 
