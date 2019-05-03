@@ -1,5 +1,6 @@
 package cn.cy.client.core.producer;
 
+import cn.cy.client.core.channel.IChannel;
 import cn.cy.io.vo.BaseInfo;
 import cn.cy.io.vo.RequestType;
 import cn.cy.io.vo.request.CommitRequest;
@@ -13,19 +14,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class Sender implements Runnable{
 
-    private volatile boolean isRunning;
+    private volatile boolean isRunning = true;
 
-    private ConcurrentLinkedQueue<BaseInfo<CommitRequest>> pendingQueue;
+    private ConcurrentLinkedQueue<Package> pendingQueue = new ConcurrentLinkedQueue<>();
 
-    private IProducer producer;
+    public static final Sender INSTANCE = new Sender();
 
-    public Sender() {
-    }
-
-    public Sender(IProducer producer) {
-        this.producer = producer;
-        this.isRunning = true;
-        this.pendingQueue = new ConcurrentLinkedQueue<>();
+    private Sender() {
     }
 
     private BaseInfo<CommitRequest> construct(String message) {
@@ -33,9 +28,9 @@ public class Sender implements Runnable{
         return new BaseInfo<>(RequestType.MESSAGE_COMMIT.id, null, UUID.randomUUID().toString(), request);
     }
 
-    public void send(String message) {
-        BaseInfo<CommitRequest> req = construct(message);
-        pendingQueue.add(req);
+    public void send(String message, IChannel dst) {
+        Package pac = new Package(construct(message), dst);
+        pendingQueue.add(pac);
     }
 
     @Override
@@ -47,11 +42,12 @@ public class Sender implements Runnable{
 
     private void pollPending() {
         if (!pendingQueue.isEmpty()) {
-            BaseInfo<CommitRequest> req = pendingQueue.poll();
-            if (req == null) {
+            Package pac = pendingQueue.poll();
+            if (pac == null) {
                 return;
             }
-            producer.getChannel().asyncWrite(JSON.toJSONString(req));
+            IChannel dst = pac.getDst();
+            dst.asyncWrite(JSON.toJSONString(pac.getContent()));
         }
     }
 }

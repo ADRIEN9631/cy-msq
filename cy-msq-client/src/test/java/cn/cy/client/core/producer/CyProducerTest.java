@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CyProducerTest {
 
     private class TestCyChannel extends CyChannel {
@@ -43,14 +46,20 @@ public class CyProducerTest {
         EmbeddedChannel channel = new EmbeddedChannel(
                 inBoundHandler
         );
-        IProducer producer = new CyProducer(new TestCyChannel(channel));
+        List<IProducer> producerList = new ArrayList<>();
+        for(int i = 0; i < 10; i++) {
+            IProducer producer = new CyProducer(new TestCyChannel(channel));
+            producerList.add(producer);
+        }
         assertEquals(0, inBoundHandler.messageCount);
 
-        for (int i = 0; i < 100; i++) {
-            producer.send("hello");
+        for (int i = 0; i < 10; i++) {
+            for (IProducer producer : producerList) {
+                producer.send(Integer.toString(i));
+            }
         }
 
-        Thread.sleep(500);
+        Thread.sleep(2000);
         assertEquals(100, inBoundHandler.messageCount);
     }
 }

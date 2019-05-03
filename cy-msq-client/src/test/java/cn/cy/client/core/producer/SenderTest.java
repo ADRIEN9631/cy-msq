@@ -14,10 +14,9 @@ public class SenderTest {
     @Test
     public void construct() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         String testMsg = "Hello";
-        Sender sender = new Sender();
-        Method testMethod = sender.getClass().getDeclaredMethod("construct", String.class);
+        Method testMethod = Sender.class.getDeclaredMethod("construct", String.class);
         testMethod.setAccessible(true);
-        BaseInfo<CommitRequest> result = (BaseInfo<CommitRequest>) testMethod.invoke(sender, testMsg);
+        BaseInfo<CommitRequest> result = (BaseInfo<CommitRequest>) testMethod.invoke(Sender.INSTANCE, testMsg);
         assertEquals("Hello", result.getData().getMsg());
     }
 
